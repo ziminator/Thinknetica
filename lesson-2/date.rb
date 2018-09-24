@@ -9,10 +9,18 @@ year = gets.chomp.to_i
 
 days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
-days.each_with_index { |d, m| day += d if month - 1 > m }
-
-if ( year % 4 == 0 && year % 100 != 0 || year % 400 == 0 ) && ( month > 2 && day > 28)
-  day += 1
+if year % 4 == 0 && year % 100 != 0 || year % 400 == 0
+  days[1] = 29
 end
 
-puts day
+day_total = 0
+i = 0
+
+while i < month
+  day_total += days[i]
+  i += 1
+end
+
+day_total += day
+
+puts day_total
