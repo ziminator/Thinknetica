@@ -21,7 +21,7 @@ end
 puts basket
 
 basket.each do | name, qtty_price |
-  total_price_item += qtty_price[:price] * qtty_price[:qtty]
+  total_price_item = qtty_price[:price] * qtty_price[:qtty]
   total_price += total_price_item
   puts "#{name} => #{total_price_item}"
 end
