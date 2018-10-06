@@ -10,27 +10,22 @@
 =end
 
 class Station
-  attr_reader :station_name
+  attr_reader :trains
 
-  def initialize(station_name)
-    @station_name = station_name
+  def initialize(name)
+    @name = name
     @trains = []
   end
 
-  def train_arrived(train)
+  def add_train(train)
     @trains << train
   end
 
-  def trains_list
-    trains.each { |train| train.number }
+  def count_train(type)
+    @trains.count { |train| train.type == type }
   end
 
-  def trains_list_type(type)
-    counter = 0
-    trains.each { |train| counter += 1 if train.type.eql?(type) }
-  end
-
-  def train_left(train)
-    trains.delete(train)
+  def left_train(train)
+    @trains.delete(train)
   end
 end
