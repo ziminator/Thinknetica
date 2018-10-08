@@ -1,5 +1,4 @@
 =begin
-
 Класс Train (Поезд):
 -Имеет номер (произвольная строка) и тип (грузовой, пассажирский) и количество вагонов,
 эти данные указываются при создании экземпляра класса
@@ -13,18 +12,17 @@
 -При назначении маршрута поезду, поезд автоматически помещается на первую станцию в маршруте.
 -Может перемещаться между станциями, указанными в маршруте. Перемещение возможно вперед и назад, но только на 1 станцию за раз.
 -Возвращать предыдущую станцию, текущую, следующую, на основе маршрута
-
 =end
 
 class Train
-  attr_reader :speed, :wagons, :index, :index, :route, :current_station
+  attr_accessor :speed
+  attr_reader :index, :route, :type, :wagons
 
   def initialize(number, type, wagons)
     @number = number
     @type = type
     @wagons = wagons.to_i
     @speed = 0
-    @index = 0
   end
 
   def speed_increase(value)
@@ -48,50 +46,40 @@ class Train
   end
 
   def set_route(route)
-    @route[@index].left_train(self) if current_station != nil
-    @route = route.stations
-    @current_station = @route[@index]
-    @route[0].add_train(self)
+    @route = route
+    @index = 0
+    @route.stations[@index].add_train(self)
   end
 
-  def go_forward(route)
-    if @index + 1 != @route.length
-      @route[@index].left_train(self)
-      @index += 1
-      @current_station = @route[@index]
-      @route[@index].add_train
-    else
-      @route[-1]
+  def go_forward
+    if @index + 1 != @route.stations.length     #Не стал использовать unless.
+      @route.stations[@index].left_train(self)  #По-моему, так короче.
+      @index +=1
+      @route.stations[@index].add_train(self)
     end
+  end
 
-  def go_backward(route)
-    if @index != 0
-      @route[@index].left_train(self)
+  def go_backward
+    if @index >= 1
+      @route.stations[@index].left_train(self)
       @index -= 1
-      @current_station = @route[@index]
-      @route[@index].add_train
-    else
-      @route[0]
+      @route.stations[@index].add_train(self)
     end
   end
 
   def current_station
-    @current_station
+    @route.stations[@index]
   end
 
   def next_station
-    if @index + 1 != @route.length
-      @route[@index + 1]
-    else
-      @route[-1]
+    if @index + 1 != @route.stations.length
+      @route.stations[@index + 1]
     end
   end
 
   def prev_station
-    if @index != 0
-      @route[@index - 1]
-    else
-      @route[0]
+    if @index >= 1
+      @route.stations[@index - 1]
     end
   end
 end
