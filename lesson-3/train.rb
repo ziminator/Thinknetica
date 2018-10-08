@@ -15,8 +15,7 @@
 =end
 
 class Train
-  attr_accessor :speed
-  attr_reader :index, :route, :type, :wagons
+  attr_reader :index, :route, :type, :wagons, :speed
 
   def initialize(number, type, wagons)
     @number = number
@@ -48,22 +47,22 @@ class Train
   def set_route(route)
     @route = route
     @index = 0
-    @route.stations[@index].add_train(self)
+    current_station.add_train(self)
   end
 
   def go_forward
-    if @index + 1 != @route.stations.length     #Не стал использовать unless.
-      @route.stations[@index].left_train(self)  #По-моему, так короче.
+    if next_station
+      current_station.left_train(self)
       @index +=1
-      @route.stations[@index].add_train(self)
+      current_station.add_train(self)
     end
   end
 
   def go_backward
-    if @index >= 1
-      @route.stations[@index].left_train(self)
+    if prev_station
+      current_station.left_train(self)
       @index -= 1
-      @route.stations[@index].add_train(self)
+      current_station.add_train(self)
     end
   end
 
@@ -72,14 +71,10 @@ class Train
   end
 
   def next_station
-    if @index + 1 != @route.stations.length
-      @route.stations[@index + 1]
-    end
+    @route.stations[@index + 1] if current_station != @route.last_station
   end
 
   def prev_station
-    if @index >= 1
-      @route.stations[@index - 1]
-    end
+    @route.stations[@index - 1] if current_station != @route.first_station
   end
 end
