@@ -15,14 +15,15 @@
 =end
 
 class Train
-  attr_accessor :moving_index
-  attr_reader :number, :wagons, :speed, :index, :route, :type
+  attr_accessor :index
+  attr_reader :number, :wagons, :speed, :type, :route
 
   def initialize(number)
     @number = number
     @wagons = []
     @speed = 0
-    @moving_index = 0
+    @type = type
+    @index = 0
   end
 
   def speed_increase(value)
@@ -39,7 +40,6 @@ class Train
 
   def set_route(route)
     @route = route
-    @index = 0
     current_station.add_train(self)
   end
 
