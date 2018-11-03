@@ -15,10 +15,9 @@
 =end
 
 class Train
-  attr_accessor :index
-  attr_reader :number, :wagons, :speed, :type, :route
+  attr_reader :number, :wagons, :speed, :type, :route, :index
 
-  def initialize(number)
+  def initialize(number, type)
     @number = number
     @wagons = []
     @speed = 0
@@ -43,19 +42,43 @@ class Train
     current_station.add_train(self)
   end
 
-  def go_forward
-    if next_station
-      current_station.left_train(self)
-      @index +=1
-      current_station.add_train(self)
+  def add_wagon   #Прицепить вагон к поезду
+    if $choice_type == "Passenger"
+      $train.wagons << PassengerWagon.new($train)
+      puts "К поезду № - #{$train.number} добавлен пассажирский вагон, всего вагонов #{$train.wagons.count}"
+    else
+      $train.wagons << CargoWagon.new($train)
+      puts "К поезду № - #{$train.number} добавлен товарный вагон, всего вагонов #{$train.wagons.count}"
     end
   end
 
-  def go_backward
-    if prev_station
-      current_station.left_train(self)
+  def delete_wagon   #Отцепить вагон от поезда
+    if $train.wagons.count > 0
+      $train.wagons.delete_at(-1)
+      puts "От поезда № - #{$train.number} отцепили вагон, осталось вагонов #{$train.wagons.count}"
+    else
+      puts "У поезда № - #{$train.number} пока нет ни одного вагона!"
+    end
+  end
+
+  def go_forward   #Переместить поезд на станцию вперёд
+    max = $train.route.stations.size - 1
+    @index = $train.index
+    if @index == max
+      puts "Поезд #{$train.number} находится на конечной станции #{$train.route.stations[@index].name}!"
+    else
+      puts "Поезд #{$train.number} отправляется со станции #{$train.route.stations[@index].name} на станцию #{$train.route.stations[@index + 1].name}."
+      @index += 1
+    end
+  end
+
+  def go_backward   #Переместить поезд на станцию назад
+    index = $train.index
+    if @index !=0
+      puts "Поезд #{$train.number} отправляется со станции #{$train.route.stations[@index].name} на станцию #{$train.route.stations[@index - 1].name}."
       @index -= 1
-      current_station.add_train(self)
+    else
+      puts "Поезд #{$train.number} находится на конечной станции #{$train.route.stations[@index].name}!"
     end
   end
 
