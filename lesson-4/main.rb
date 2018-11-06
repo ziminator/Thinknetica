@@ -162,7 +162,7 @@ class Main
 
   def add_wagon_to_train   #7. Прицепить вагон к поезду
     choice_train
-    if @choice_type == "Passenger"
+    if @choice_type == :passenger
       @wagon = PassengerWagon.new
       adding_wagon
       @interface.puts_add_pass_wagon(@train)
@@ -173,11 +173,17 @@ class Main
     end
   end
 
+  def adding_wagon
+    @train = @choice_train
+    @train.add_wagon(@wagon)
+  end
+
   def delete_wagon_from_train   #8. Отцепить вагон от поезда
     choice_train
     @train = @choice_train
     if @train.wagons.count > 0
-      @train.delete_wagon
+      wagon_id = @train.wagons[-1]
+      @train.delete_wagon(wagon_id)
       @interface.puts_delete_wagon(true, @train)
     else
       @interface.puts_delete_wagon(false, @train)
@@ -211,7 +217,7 @@ class Main
       return false
     else
       @interface.puts_text(:list_stations)
-      @stations.each.with_index(1) { |station, index| puts "#{index} - #{station.name} "}
+      @interface.puts_list_stations(@stations)
       @interface.puts_text(:divide)
       return true
     end
@@ -237,7 +243,7 @@ class Main
   end
 
   def show_trains  #Показать список поездов
-    @trains.each.with_index(1) { |train, index| puts "#{index}: #{train.number} #{train.type}" }
+    @interface.puts_list_trains(@trains)
     @interface.puts_text(:divide)
   end
 
@@ -254,17 +260,8 @@ class Main
   end
 
   def show_routes  #Показать списки маршрутов
-    @routes.each.with_index(1) { |route, index| puts "#{index}: #{print_routes route}" }
+    @interface.puts_list_routes(@routes)
     @interface.puts_text(:divide)
-  end
-
-  def adding_wagon
-    @train = @choice_train
-    @train.add_wagon(@wagon)
-  end
-
-  def print_routes(route)
-    route.stations.map(&:name)
   end
 
   def new_stations(station)

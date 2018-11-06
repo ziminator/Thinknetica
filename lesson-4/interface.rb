@@ -22,7 +22,7 @@ class Interface
     menu_items = <<-TEXT
       Выберите пункт меню:
       =======================================
-      1   - Создать станцию,
+      1   - Создать станцию
       2   - Создать поезд
       3   - Создать маршрут
       4   - Добавить станцию к маршруту
@@ -118,6 +118,22 @@ class Interface
 
   def puts_add_cargo_wagon(train)
     puts "К поезду № - #{train.number} добавлен товарный вагон, всего вагонов #{train.wagons.count}"
+  end
+
+  def puts_list_stations(stations)
+    stations.each.with_index(1) { |station, index| puts "#{index} - #{station.name} "}
+  end
+
+  def puts_list_trains(trains)
+    trains.each.with_index(1) { |train, index| puts "#{index}: #{train.number} #{train.type}" }
+  end
+
+  def puts_list_routes(routes)
+    routes.each.with_index(1) { |route, index| puts "#{index}: #{print_routes route}" }
+  end
+
+  def print_routes(route)
+    route.stations.map(&:name)
   end
 
   def user_input
