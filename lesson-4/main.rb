@@ -21,7 +21,6 @@
 В качестве ответа приложить ссылку на репозиторий с решением
 =end
 
-require_relative 'menu.rb'
 require_relative 'interface.rb'
 require_relative 'station.rb'
 require_relative 'route.rb'
@@ -36,33 +35,32 @@ class Main
   attr_reader :stations, :trains, :routes
 
   def initialize
-    $stations = []
-    $trains = []
-    $routes = []
+    @stations = []
+    @trains = []
+    @routes = []
   end
 
   public  #Публичный метод, вызывающий и обрабатывающий меню
 
   def run
-    menu = Menu.new
     @interface = Interface.new
     loop do
-      menu.puts_menu
-      choice = gets.to_i
+      @interface.menu
+      choice = @interface.user_input.to_i
       case choice
-        when 0 then exit                                  #выход
-        when 1 then add_stations               #Создать станцию
-        when 2 then add_train                  #Создать поезд
-        when 3 then add_route                   #Создать маршрут
-        when 4 then add_station_to_route       #Добавить станцию к маршруту
-        when 5 then delete_station_from_route  #Удалить станцию из маршрута
-        when 6 then add_route_to_train         #Назначить маршрут поезду
-        when 7 then add_wagon_to_train         #Прицепить вагоны к поезду
-        when 8 then delete_wagon_from_train    #Отцепить выгоны от поезда
-        when 9 then move_forward         #Переместить поезд по маршруту вперёд
-        when 10 then move_backward       #Переместить поезд по маршруту назад
-        when 11 then show_stations             #Отображать список станций
-        when 12 then show_train_on_station     #Отобразить список поездов на станции
+      when 0 then exit                         #выход
+      when 1 then add_stations                 #Создать станцию
+      when 2 then add_train                    #Создать поезд
+      when 3 then add_route                    #Создать маршрут
+      when 4 then add_station_to_route         #Добавить станцию к маршруту
+      when 5 then delete_station_from_route    #Удалить станцию из маршрута
+      when 6 then add_route_to_train           #Назначить маршрут поезду
+      when 7 then add_wagon_to_train           #Прицепить вагоны к поезду
+      when 8 then delete_wagon_from_train      #Отцепить выгоны от поезда
+      when 9 then move_forward                 #Переместить поезд по маршруту вперёд
+      when 10 then move_backward               #Переместить поезд по маршруту назад
+      when 11 then show_stations               #Отображать список станций
+      when 12 then show_train_on_station       #Отобразить список поездов на станции
       end
     end
   end
@@ -70,132 +68,215 @@ class Main
   private   #Далее приватные методы, вызываемые только в этом классе из пунктов меню
 
   def add_stations   #1 Создать станцию
-    name = @interface.user_input("Введите название станции:")
-    unless $stations.map { |station| station.name }.include? name
+    @interface.puts_text(:station)
+    name = @interface.user_input
+    if @stations.map(&:name).include? name
+      @interface.puts_result_station(false, name) #Станция уже есть
+    else
       station = Station.new(name)
       new_stations(station)
-      puts "Станция #{station.name} создана!"
-    else
-      puts "Станция #{name} уже есть, введите другое название станции!"
+      @interface.puts_result_station(true, name)  #Станции нет, добавляем
     end
   end
 
   def add_train  #2. Создать поезд
-    number = @interface.user_input("Введите номер поезда:").to_i
-    submenu = @interface.user_input("Выберите тип поезда: 1 - Пассажирский; 2 - Товарный").to_i
-    unless $trains.map { |train| train }.include? number
+    @interface.puts_text(:num_train)
+    number = @interface.user_input.to_i
+    if @trains.map(&:number).include? number
+      @interface.puts_double_train(number)
+    else
+      @interface.puts_text(:choice_type)
+      submenu = @interface.user_input.to_i
       case submenu
       when 1
-        $train = PassengerTrain.new(number)
-        new_trains($train)
-        puts "Создан пассажирский поезд №#{number}"
+        @train = PassengerTrain.new(number)
+        new_trains(@train)
+        @interface.puts_pass_train(number)
       when 2
-        $train = CargoTrain.new(number)
-        new_trains($train)
-        puts "Создан товарный поезд №#{number}"
+        @train = CargoTrain.new(number)
+        new_trains(@train)
+        @interface.puts_cargo_train(number)
       end
-    else
-      puts "Поезд с номером #{number} уже есть, введите другой номер поезда!"
     end
   end
 
   def add_route  #3. Создать маршрут
     if show_stations
-      puts "Выберите из списка станции,"
-      first = @interface.user_input("Начальную:").to_i
-      last = @interface.user_input("Конечную:").to_i
-      return puts "Первая и последняя станция не могут быть одинаковыми!" if first == last
-      first = $stations[first - 1]
-      last = $stations[last - 1]
+      @interface.puts_text(:choice_stations)
+      @interface.puts_text(:first)
+      first = @interface.user_input.to_i
+      @interface.puts_text(:last)
+      last = @interface.user_input.to_i
+      return @interface.puts_text(:first_last) if first == last
+      first = @stations[first - 1]
+      last = @stations[last - 1]
       unless first && last
-        puts "Выбраны несуществующие станции!"
+        @interface.puts_text(:new_stations)
         return
       end
-      $route = Route.new(first, last)
-      new_routes($route)
-      puts "Создан маршрут #{$route.first.name}, #{$route.last.name}"
+      @route = Route.new(first, last)
+      new_routes(@route)
+      @interface.puts_create_route(@route)
     end
   end
 
   def add_station_to_route   #4. Добавить станцию к маршруту
-    @interface.choice_route
-    @interface.choice_station
-    new_station_to_route = $stations[$choice_station]
-    update_routes = $routes[$route_index]
-    unless update_routes.stations.map { |station| station.name }.include? new_station_to_route.name
-      update_routes.stations.insert(-2, new_station_to_route)
-      puts "Станция #{new_station_to_route.name} добавлна в маршрут."
+    choice_route
+    choice_station
+    new_station_to_route = @stations[@station_index]
+    update_routes = @routes[@route_index]
+    if update_routes.stations.map(&:name).include? new_station_to_route.name
+      @interface.puts_station_to_route(false, new_station_to_route)
     else
-      puts "Станция #{new_station_to_route.name} уже есть в маршруте, выберите другую станцию!"
+      update_routes.stations.insert(-2, new_station_to_route)
+      @interface.puts_station_to_route(true, new_station_to_route)
     end
   end
 
   def delete_station_from_route   #5. Удалить станцию из маршрута
-    @interface.choice_route
-    @interface.choice_station
-    route_station = $stations[$choice_station]
-    update_routes = $routes[$route_index]
-    if update_routes.stations.map { |station| station.name }.include? route_station.name
-      index = update_routes.stations.map { |station| station.name }.index route_station.name
+    choice_route
+    choice_station
+    route_station = @stations[@station_index]
+    update_routes = @routes[@route_index]
+    if update_routes.stations.map(&:name).include? route_station.name
+      index = update_routes.stations.map(&:name).index route_station.name
       update_routes.stations.delete_at(index)
-      puts "Станция #{route_station.name} удалена из маршрута."
+      @interface.puts_delete_from_route(true, route_station)
     else
-      puts "Станции #{route_station.name} нет в маршруте, выберите другую станцию!"
+      @interface.puts_delete_from_route(false, route_station)
     end
   end
 
   def add_route_to_train   #6. Назначить маршрут поезду
-    @interface.choice_train
-    @interface.choice_route
-    $train.set_route($choice_route)
-    puts "Поезду с № - #{$train.number} назначен маршрут #{$route_index + 1}. #{$choice_route.first.name} - #{$choice_route.last.name}"
+    if @trains.empty?
+      @interface.puts_text(:empty_train)
+      return
+    else
+     choice_train
+    end
+    choice_route
+    get_route = @routes[@route_index]
+    @train.set_route(get_route)
+    @interface.puts_route_to_train(@train, @route_index, get_route)
   end
 
   def add_wagon_to_train   #7. Прицепить вагон к поезду
-    @interface.choice_train
-    $train.add_wagon
+    choice_train
+    if @choice_type == "Passenger"
+      @wagon = PassengerWagon.new
+      adding_wagon
+      @interface.puts_add_pass_wagon(@train)
+    else
+      @wagon = CargoWagon.new
+      adding_wagon
+      @interface.puts_add_cargo_wagon(@train)
+    end
   end
 
-  def delete_wagon_from_train   #7. Отцепить вагон от поезда
-    @interface.choice_train
-    $train.delete_wagon
+  def delete_wagon_from_train   #8. Отцепить вагон от поезда
+    choice_train
+    @train = @choice_train
+    if @train.wagons.count > 0
+      @train.delete_wagon
+      @interface.puts_delete_wagon(true, @train)
+    else
+      @interface.puts_delete_wagon(false, @train)
+    end
   end
 
-  def move_forward   #9. Переместить поезд на станцию вперёд
-    @interface.choice_train
-    $train.go_forward
+  def move_forward   #Переместить поезд на станцию вперёд
+    max = @train.route.stations.size - 1
+    index = @train.index
+    if index == max
+      @interface.puts_end_station(@train, index)
+    else
+      @train.go_forward
+      @interface.puts_move_forward_train(@train, index)
+    end
   end
 
-  def move_backward   #10. Переместить поезд на станцию назад
-    @interface.choice_train
-    $train.go_backward
+  def move_backward   #Переместить поезд на пердыдущую станцию
+    index = @train.index
+    if index != 0
+      @train.go_backward
+      @interface.puts_move_backward_train(@train, index)
+    else
+      @interface.puts_end_station(@train, index)
+    end
   end
 
   def show_stations  #11 Показать список станций
-    @interface.list_stations
+    if @stations.empty?
+      @interface.puts_text(:empty_stations)
+      return false
+    else
+      @interface.puts_text(:list_stations)
+      @stations.each.with_index(1) { |station, index| puts "#{index} - #{station.name} "}
+      @interface.puts_text(:divide)
+      return true
+    end
   end
 
   def show_train_on_station  #12 Показать список поездов (на станции)
     show_stations
-    index = gets.to_i
-    unless $stations[index - 1].list_train.empty?
-      puts "На станции #{$stations[index - 1].name} находятся:"
-      $stations[index - 1].list_train
+    index = @interface.user_input.to_i
+    if @stations[index - 1].list_train.empty?
+      @interface.puts_on_station(false, @stations, index)
     else
-      puts "На станции #{$stations[index - 1].name} нет поездов."
+      @interface.puts_on_station(true, @stations, index)
+      @stations[index - 1].list_train
     end
   end
 
+  def choice_train  #Выбор поезда
+    @interface.puts_text(:choice_train)
+    show_trains
+    index = @interface.user_input.to_i
+    @choice_train = @trains[index - 1]
+    @choice_type = @choice_train.type
+  end
+
+  def show_trains  #Показать список поездов
+    @trains.each.with_index(1) { |train, index| puts "#{index}: #{train.number} #{train.type}" }
+    @interface.puts_text(:divide)
+  end
+
+  def choice_route
+    @interface.puts_text(:choice_route)
+    show_routes
+    @route_index = @interface.user_input.to_i - 1
+  end
+
+  def choice_station
+    @interface.puts_text(:choice_station)
+    show_stations
+    @station_index = @interface.user_input.to_i - 1
+  end
+
+  def show_routes  #Показать списки маршрутов
+    @routes.each.with_index(1) { |route, index| puts "#{index}: #{print_routes route}" }
+    @interface.puts_text(:divide)
+  end
+
+  def adding_wagon
+    @train = @choice_train
+    @train.add_wagon(@wagon)
+  end
+
+  def print_routes(route)
+    route.stations.map(&:name)
+  end
+
   def new_stations(station)
-    $stations << station
+    @stations << station
   end
 
   def new_routes(route)
-    $routes << route
+    @routes << route
   end
 
   def new_trains(train)
-    $trains <<  train
+    @trains <<  train
   end
 end
 

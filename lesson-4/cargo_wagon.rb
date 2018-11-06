@@ -1,6 +1,6 @@
 class CargoWagon < Wagon
 
-  def initialize(number)
+  def initialize
     super
   end
 end

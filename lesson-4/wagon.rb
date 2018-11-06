@@ -1,7 +1,5 @@
 class Wagon
-  attr_reader :number
 
-  def initialize(number)
-    @number = number
+  def initialize
   end
 end
