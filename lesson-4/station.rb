@@ -20,7 +20,7 @@ class Station
   end
 
   def list_train            #Список поездов на станции
-    @trains.each { |train| puts "Поезд № #{train.number}" }
+    @trains.each(&:number)
   end
 
   def type_train(type)     #Список поездов по типу

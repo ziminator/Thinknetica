@@ -3,19 +3,24 @@ class Interface
   TEXT_CONST = {
     :station => "Введите название станции:",
     :num_train => "Введите номер поезда",
-    :choice_train => "Выберите поезд:",
-    :choice_route => "Выберите маршрут:",
-    :choice_station => "Выберите станцию:",
+    :choice_train => "Введите индекс поезда:",
+    :choice_route => "Выберите индекс маршрута:",
+    :choice_station => "Выберите индекс станции из списка,",
     :choice_type => "Выберите тип поезда: 1 - Пассажирский; 2 - Товарный",
-    :choice_stations => "Выберите из списка станции,",
+    :choice_stations => "Выберите из списка индекс станции,",
+    :choice_back => "Вы сделали неверный выбор, повторите ещё раз!",
     :list_stations => "Список станций:",
     :divide => "-------------------",
     :first => "Начальная:",
     :last => "Конечная:",
     :first_last => "Первая и последняя станция не могут быть одинаковыми!",
     :non_stations => "Выбраны несуществующие станции!",
-    :empty_stations => "Станций пока нет, сначала добавьте станции!",
-    :empty_train => "Нет поездов для выбора, добавьте хотя бы один поезд!"
+    :empty_stations => "Cначала добавьте станции!",
+    :empty_train => "Нет поездов для выбора, добавьте хотя бы один поезд!",
+    :empty_routes => "Нет маршрутов для выбора, сначала добавьте хотя бы один маршрут!",
+    :print_back => "Вы ввели неверные данные, повторите ещё раз!",
+    :less_station => "Одной станции для построения маршрута недостаточно! Добавьте ещё хотя бы одну станцию!",
+    :less_route => "У поезда отсутствуют назначенные маршруты! Сначала назначте маршрут поезду!"
   }
 
   def menu
@@ -57,6 +62,11 @@ class Interface
     when :choice_train then puts TEXT_CONST[:choice_train]
     when :empty_stations then puts TEXT_CONST[:empty_stations]
     when :empty_train then puts TEXT_CONST[:empty_train]
+    when :empty_routes then puts TEXT_CONST[:empty_routes]
+    when :choice_back then puts TEXT_CONST[:choice_back]
+    when :print_back then puts TEXT_CONST[:print_back]
+    when :less_station then puts TEXT_CONST[:less_station]
+    when :less_route then puts TEXT_CONST[:less_route]
     end
   end
 
@@ -65,7 +75,7 @@ class Interface
   end
 
   def puts_station_to_route(bool, station)
-    puts bool ? "Станция #{station.name} добавлна в маршрут." : "Станция #{station.name} уже есть в маршруте, выберите другую станцию!"
+    puts bool ? "Станция #{station.name} добавлена в маршрут." : "Станция #{station.name} уже есть в маршруте, выберите другую станцию!"
   end
 
   def puts_delete_from_route(bool, station)
@@ -73,7 +83,7 @@ class Interface
   end
 
   def puts_on_station(bool, station, index)
-    puts bool ? "На станции #{station[index - 1].name} находятся:" : "На станции #{station[index - 1].name} нет поездов."
+    puts bool ? "На станции #{station[index].name} находятся:" : "На станции #{station[index].name} нет поездов."
   end
 
   def puts_delete_wagon(bool, train)
@@ -93,11 +103,11 @@ class Interface
   end
 
   def puts_create_route(route)
-    puts "Создан маршрут #{route.first.name}, #{route.last.name}"
+    puts "Создан маршрут #{route.first.name} --- #{route.last.name}"
   end
 
   def puts_route_to_train(train, route_index, get_route)
-    puts "Поезду с № - #{train.number} назначен маршрут #{route_index + 1}. #{get_route.first.name} - #{get_route.last.name}"
+    puts "Поезду с № - #{train.number} назначен маршрут № #{route_index + 1}. #{get_route.first.name} - #{get_route.last.name}"
   end
 
   def puts_end_station(train, index)
@@ -125,15 +135,11 @@ class Interface
   end
 
   def puts_list_trains(trains)
-    trains.each.with_index(1) { |train, index| puts "#{index}: #{train.number} #{train.type}" }
+    trains.each.with_index(1) { |train, index| puts "#{index}: Поезд № #{train.number}, тип - #{train.type}" }
   end
 
   def puts_list_routes(routes)
-    routes.each.with_index(1) { |route, index| puts "#{index}: #{print_routes route}" }
-  end
-
-  def print_routes(route)
-    route.stations.map(&:name)
+    routes.each.with_index(1) { |route, index| puts "#{index}: #{route.stations.map(&:name)}" }
   end
 
   def user_input

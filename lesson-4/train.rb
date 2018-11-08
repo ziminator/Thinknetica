@@ -43,9 +43,7 @@ class Train
   end
 
   def add_wagon(wagon)   #Прицепить вагон к поезду
-    if wagon.type == @type
-      @wagons << wagon
-    end
+    @wagons << wagon
   end
 
   def delete_wagon(wagon_id)   #Отцепить вагон от поезда
