@@ -194,6 +194,10 @@ class Main
     end
     return unless check_train
     get_train_type
+    if @choice_train.route == nil
+      @interface.puts_text(:less_route)
+      return
+    end
     max = @choice_train.route.stations.size - 1
     index = @choice_train.index
     if index == max
@@ -211,6 +215,10 @@ class Main
     end
     return unless check_train
     get_train_type
+    if @choice_train.route == nil
+      @interface.puts_text(:less_route)
+      return
+    end
     index = @choice_train.index
     if index != 0
       @choice_train.go_backward

@@ -20,7 +20,7 @@ class Station
   end
 
   def list_train            #Список поездов на станции
-    @trains.each(&:number)
+    @trains
   end
 
   def type_train(type)     #Список поездов по типу
