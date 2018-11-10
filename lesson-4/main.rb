@@ -165,12 +165,12 @@ class Main
     return unless check_train
     get_train_type
     if @choice_type == :passenger
-      @wagon = PassengerWagon.new
-      @choice_train.add_wagon(@wagon)
+      wagon = PassengerWagon.new
+      @choice_train.add_wagon(wagon)
       @interface.puts_add_pass_wagon(@choice_train)
     else
-      @wagon = CargoWagon.new
-      @choice_train.add_wagon(@wagon)
+      wagon = CargoWagon.new
+      @choice_train.add_wagon(wagon)
       @interface.puts_add_cargo_wagon(@choice_train)
     end
   end
