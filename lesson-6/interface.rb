@@ -23,7 +23,6 @@ class Interface
     :print_back => "Вы ввели неверные данные, повторите ещё раз!",
     :less_station => "Одной станции для построения маршрута недостаточно! Добавьте ещё хотя бы одну станцию!",
     :less_route => "У поезда отсутствуют назначенные маршруты! Сначала назначте маршрут поезду!",
-    :mismatch_number => "Неверный формат номера поезда!"
   }
 
   def menu
@@ -75,7 +74,6 @@ class Interface
     when :print_back then puts TEXT_CONST[:print_back]
     when :less_station then puts TEXT_CONST[:less_station]
     when :less_route then puts TEXT_CONST[:less_route]
-    when :mismatch_number then puts TEXT_CONST[:mismatch_number]
     end
   end
 

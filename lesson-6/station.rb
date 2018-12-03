@@ -1,7 +1,9 @@
 require_relative 'instance_counter.rb' #модуль
+require_relative 'validation.rb'
 
 class Station
   include InstanceCounter
+  include Validation
   attr_reader :name
 
   @@stations = []
@@ -12,6 +14,7 @@ class Station
 
   def initialize(name)
     @name = name
+    validate!
     @trains = []
     @@stations << self
     register_instance
@@ -31,5 +34,12 @@ class Station
 
   def left_train(train)
     @trains.delete(train)
+  end
+
+  protected
+  def validate!
+    raise "Наименование станции не введено, повторите попытку!" if @name.empty?
+    raise "Станция с таким нименованием уже есть, придумате другое название!" if @@stations.map(&:name).include? @name
+    true
   end
 end

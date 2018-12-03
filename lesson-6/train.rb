@@ -1,9 +1,12 @@
 require_relative 'company.rb' #модуль
 require_relative 'instance_counter.rb' #модуль
+require_relative 'validation.rb'
 
 class Train
   include Company
   include InstanceCounter
+  include Validation
+  NUMBER_TRAIN = /^[\D\d]{3}-?[\D\d]{2}$/i
   attr_reader :number, :wagons, :speed, :type, :route, :index
 
   @@trains = {}
@@ -14,9 +17,10 @@ class Train
 
   def initialize(number, type)
     @number = number
+    @type = type
+    validate!
     @wagons = []
     @speed = 0
-    @type = type
     @index = 0
     @@trains[number] = self
     register_instance
@@ -73,5 +77,13 @@ class Train
 
   def prev_station
     @route.stations[@index - 1] if current_station != @route.first_station
+  end
+
+  protected
+  def validate!
+    raise "Введен некорректный номер поезда!" if @number !~ NUMBER_TRAIN
+    raise "Номер поезда не может быть пустым!" if @number == nil or @number == ""
+    raise "Такой номер поезда уже есть!" if @trains.map(&:number).include? @number
+    true
   end
 end

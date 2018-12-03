@@ -7,13 +7,11 @@ require_relative 'cargo_train.rb'
 require_relative 'wagon.rb'
 require_relative 'passenger_wagon.rb'
 require_relative 'cargo_wagon.rb'
-require_relative 'validation.rb'
 require_relative 'instance_counter.rb'
 
 class Main
   attr_reader :stations, :trains, :routes
   include InstanceCounter
-  include Validation
 
   def initialize
     @stations = []
@@ -60,17 +58,15 @@ class Main
 
   def add_stations   #1 Создать станцию
     @interface.puts_text(:station)
-    @name = @interface.user_input.to_s
-    return unless valid?(:station)
-    station = Station.new(@name)
+    name = @interface.user_input.to_s
+    station = Station.new(name)
     new_stations(station)
-    @interface.puts_result_station(true, @name)  #Станции нет, добавляем
+    @interface.puts_result_station(true, name)  #Станции нет, добавляем
   end
 
   def add_train  #2. Создать поезд
     @interface.puts_text(:num_train)
     @number = @interface.user_input.to_s
-    return unless valid?(:train)
       @interface.puts_text(:choice_type)
       submenu = @interface.user_input.to_i
       case submenu
@@ -88,20 +84,25 @@ class Main
   end
 
   def add_route  #3. Создать маршрут
-    return unless valid?(:route_empty)
-    show_stations
-    @interface.puts_text(:choice_stations)
-    @interface.puts_text(:first)
-    @first_input = @interface.user_input.to_i - 1
-    @interface.puts_text(:last)
-    @last_input = @interface.user_input.to_i - 1
-    return unless valid?(:route_same)
-    @first = @stations[@first_input]
-    @last = @stations[@last_input]
-    return unless valid?(:route_both)
-    @route = Route.new(@first, @last)
-    new_routes(@route)
-    @interface.puts_create_route(@route)
+    if @stations.empty? || @stations.count < 2
+      @interface.puts_text(:empty_stations)
+    else
+      show_stations
+      @interface.puts_text(:choice_stations)
+      @interface.puts_text(:first)
+      first = @interface.user_input.to_i - 1
+      @interface.puts_text(:last)
+      last = @interface.user_input.to_i - 1
+      first = @stations[first]
+      last = @stations[last]
+      if @stations.include?(first) && @stations.include?(last)
+        @route = Route.new(first, last)
+        new_routes(@route)
+        @interface.puts_create_route(@route)
+      else
+        @interface.puts_text(:choice_back)
+      end
+    end
   end
 
   def add_station_to_route   #4. Добавить станцию к маршруту

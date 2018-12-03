@@ -1,7 +1,9 @@
 require_relative 'instance_counter.rb' #модуль
+require_relative 'validation.rb'
 
 class Route
   include InstanceCounter
+  include Validation
 
   attr_reader :stations, :first, :last
 
@@ -9,6 +11,7 @@ class Route
     @first = first
     @last = last
     @stations = [first, last]
+    validate!
     register_instance
   end
 
@@ -30,5 +33,11 @@ class Route
 
   def last_station
     @stations[-1]
+  end
+
+  protected
+  def validate!
+    raise "Первая и последняя станции не могут быть одинаковыми" if @first == @last
+    true
   end
 end
