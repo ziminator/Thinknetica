@@ -40,5 +40,8 @@ class Station
   def validate!
     raise "Наименование станции не введено, повторите попытку!" if @name.empty?
     raise "Станция с таким нименованием уже есть, придумате другое название!" if @@stations.map(&:name).include? @name
+  rescue RuntimeError => message
+    puts message
+    retry
   end
 end
