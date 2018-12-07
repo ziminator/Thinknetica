@@ -8,8 +8,6 @@ class Route
   attr_reader :stations, :first, :last
 
   def initialize(first, last)
-    @first = first
-    @last = last
     @stations = [first, last]
     validate!
     register_instance
@@ -37,7 +35,6 @@ class Route
 
   protected
   def validate!
-    raise "Первая и последняя станции не могут быть одинаковыми" if @first == @last
-    true
+    raise "Первая и последняя станции не могут быть одинаковыми" if @stations[0] == @stations[-1]
   end
 end

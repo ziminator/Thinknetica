@@ -117,8 +117,8 @@ class Interface
     puts "Поезд с номером #{number} уже есть, введите другой номер поезда!"
   end
 
-  def puts_create_route(route)
-    puts "Создан маршрут #{route.first.name} --- #{route.last.name}"
+  def puts_create_route(first, last)
+    puts "Создан маршрут #{first.name} --- #{last.name}"
   end
 
   def puts_route_to_train(train, route_index, get_route)

@@ -6,7 +6,7 @@ class Train
   include Company
   include InstanceCounter
   include Validation
-  NUMBER_TRAIN = /^[\D\d]{3}-?[\D\d]{2}$/i
+  NUMBER_TRAIN = /^[a-zа-я\d]{3}-?[a-zа-я\d]{2}$/i
   attr_reader :number, :wagons, :speed, :type, :route, :index
 
   @@trains = {}
@@ -83,7 +83,6 @@ class Train
   def validate!
     raise "Введен некорректный номер поезда!" if @number !~ NUMBER_TRAIN
     raise "Номер поезда не может быть пустым!" if @number == nil or @number == ""
-    raise "Такой номер поезда уже есть!" if @trains.map(&:number).include? @number
-    true
+    raise "Такой номер поезда уже есть!" if @@trains.map(&:number).include? @number
   end
 end

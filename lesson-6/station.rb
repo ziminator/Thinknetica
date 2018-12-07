@@ -14,8 +14,8 @@ class Station
 
   def initialize(name)
     @name = name
-    validate!
     @trains = []
+    validate!
     @@stations << self
     register_instance
   end
@@ -40,6 +40,5 @@ class Station
   def validate!
     raise "Наименование станции не введено, повторите попытку!" if @name.empty?
     raise "Станция с таким нименованием уже есть, придумате другое название!" if @@stations.map(&:name).include? @name
-    true
   end
 end

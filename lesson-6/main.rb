@@ -98,7 +98,7 @@ class Main
       if @stations.include?(first) && @stations.include?(last)
         @route = Route.new(first, last)
         new_routes(@route)
-        @interface.puts_create_route(@route)
+        @interface.puts_create_route(first, last)
       else
         @interface.puts_text(:choice_back)
       end
