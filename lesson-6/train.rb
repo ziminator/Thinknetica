@@ -82,7 +82,7 @@ class Train
   protected
   def validate!
     raise "Введен некорректный номер поезда!" if @number !~ NUMBER_TRAIN
-    raise "Номер поезда не может быть пустым!" if @number == nil or @number == ""
-    raise "Такой номер поезда уже есть!" if @@trains.map(&:number).include? @number
+    raise "Номер поезда не может быть пустым!" if @number == nil || @number.empty?
+    raise "Такой номер поезда уже есть!" if @@trains.include? @number
   end
 end

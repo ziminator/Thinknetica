@@ -77,6 +77,10 @@ class Interface
     end
   end
 
+  def puts_exception(exception)
+    puts exception
+  end
+
   def puts_objects_stations
     puts "Список объектов созданных станций #{Station.all}"
   end

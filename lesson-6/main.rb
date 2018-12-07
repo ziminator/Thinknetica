@@ -62,25 +62,31 @@ class Main
     station = Station.new(name)
     new_stations(station)
     @interface.puts_result_station(true, name)  #Станции нет, добавляем
+    rescue RuntimeError => station_exception
+    @interface.puts_exception(station_exception)
+    retry
   end
 
   def add_train  #2. Создать поезд
     @interface.puts_text(:num_train)
-    @number = @interface.user_input.to_s
+    number = @interface.user_input.to_s
       @interface.puts_text(:choice_type)
       submenu = @interface.user_input.to_i
       case submenu
       when 1
-        @train = PassengerTrain.new(@number)
+        @train = PassengerTrain.new(number)
         new_trains(@train)
-        @interface.puts_pass_train(@number)
+        @interface.puts_pass_train(number)
       when 2
-        @train = CargoTrain.new(@number)
+        @train = CargoTrain.new(number)
         new_trains(@train)
-        @interface.puts_cargo_train(@number)
+        @interface.puts_cargo_train(number)
       else
         @interface.puts_text(:choice_back)
       end
+      rescue RuntimeError => train_exception
+      @interface.puts_exception(train_exception)
+      retry
   end
 
   def add_route  #3. Создать маршрут
@@ -103,6 +109,9 @@ class Main
         @interface.puts_text(:choice_back)
       end
     end
+    rescue RuntimeError => route_exception
+    @interface.puts_exception(route_exception)
+    retry
   end
 
   def add_station_to_route   #4. Добавить станцию к маршруту
