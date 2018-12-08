@@ -9,8 +9,8 @@ class Route
 
   def initialize(first, last)
     @stations = [first, last]
+    validate!
     register_instance
-    validate!(first, last)
   end
 
   def add_station(station)
@@ -35,7 +35,7 @@ class Route
 
   protected
   def validate!(first, last)
-    raise "Первая и последняя станции не могут быть одинаковыми!" if first == last
+    raise "Первая и последняя станции не могут быть одинаковыми!" if first_station == last.station
     raise "Одна или обе станции не являются объектами класса Station!" if first.class != Station || last.class != Station
   end
 end
