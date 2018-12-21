@@ -35,16 +35,16 @@ class Main
     @trains << CargoTrain.new("224-46")
 
     #Добавляем вагоны к поездам
-    @trains[0].add_wagon(PassengerWagon.new(35))
-    @trains[0].add_wagon(PassengerWagon.new(42))
-    @trains[1].add_wagon(PassengerWagon.new(32))
-    @trains[1].add_wagon(PassengerWagon.new(41))
-    @trains[1].add_wagon(PassengerWagon.new(38))
-    @trains[2].add_wagon(CargoWagon.new(428))
-    @trains[2].add_wagon(CargoWagon.new(356))
-    @trains[2].add_wagon(CargoWagon.new(429))
-    @trains[3].add_wagon(CargoWagon.new(351))
-    @trains[3].add_wagon(CargoWagon.new(423))
+    @trains[0].add_wagon(PassengerWagon.new(35.to_i))
+    @trains[0].add_wagon(PassengerWagon.new(42.to_i))
+    @trains[1].add_wagon(PassengerWagon.new(32.to_i))
+    @trains[1].add_wagon(PassengerWagon.new(41.to_i))
+    @trains[1].add_wagon(PassengerWagon.new(38.to_i))
+    @trains[2].add_wagon(CargoWagon.new(428.to_i))
+    @trains[2].add_wagon(CargoWagon.new(356.to_i))
+    @trains[2].add_wagon(CargoWagon.new(429.to_i))
+    @trains[3].add_wagon(CargoWagon.new(351.to_i))
+    @trains[3].add_wagon(CargoWagon.new(423.to_i))
 
     #Создаём маршруты
     @routes << Route.new(@stations[0], stations[3])
@@ -293,24 +293,28 @@ class Main
     if get_train_type == :passenger
       @interface.puts_text(:wagon_seats)
       get_wagon
-      @get_wagon.take_seats_volume(1)
+      return if @choice_train.wagons.count < @choice_wagon
+      @get_wagon.fill
     else
       @interface.puts_text(:wagon_volume)
       get_wagon
       @interface.puts_text(:volume_busy)
       volume = @interface.user_input.to_i
-      @get_wagon.take_seats_volume(volume)
+      @get_wagon.fill(volume)
     end
+    rescue RuntimeError => fill_exception
+    @interface.puts_exception(fill_exception)
+    retry
   end
 
   def get_wagon
-    choice_wagon = @interface.user_input.to_i
-    @get_wagon = @choice_train.wagons[choice_wagon - 1]
+    @choice_wagon = @interface.user_input.to_i
+    @get_wagon = @choice_train.wagons[@choice_wagon - 1]
   end
 
   def add_volume
     return unless check_train
-    @choice_train.take_seats_volume()
+    @choice_train.fill
   end
 
   def get_train

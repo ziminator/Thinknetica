@@ -1,25 +1,18 @@
 class Wagon
   include Company
-  attr_reader :type
+  attr_reader :type, :total, :free
 
-  def initialize(type)
+  def initialize(type, qtty)
     @type = type
+    @free = @total = qtty
   end
 
-  def take_seats_volume(amount)    #Занять место/объём
-    @seats_volume[:free] -= amount
-    @seats_volume[:busy] += amount
+  def fill(amount)
+    raise "В вагоне нет места! Повторите ввод:" if @free < amount
+    @free -= amount
   end
 
-  def busy   #Вернуть кол-во занятых мест
-    @seats_volume[:busy]
-  end
-
-  def free    #Вернуть количество свободных мест
-    @seats_volume[:free]
-  end
-
-  def total
-    @total
+  def busy
+    @total - @free
   end
 end

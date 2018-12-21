@@ -8,14 +8,11 @@
 
 class PassengerWagon < Wagon
 
-  def initialize(seats_volume)
-    super(:passenger)
-    @seats_volume = { free: seats_volume, busy: 0 }
-    @total = seats_volume
-    validate!
+  def initialize(seats)
+    super(:passenger, seats)
   end
 
-  def validate!
-    raise "Все свободные места заняты!" if @seats_volume[:free] == 0
+  def fill
+    super(1)
   end
 end

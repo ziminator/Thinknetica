@@ -193,6 +193,7 @@ class Interface
   def puts_detail_wagons(wagon, index)
     if wagon.type == :passenger
       puts "Вагон № #{index}, тип \"Пассажирский\" -- всего мест: #{wagon.total}, мест свободно: #{wagon.free}, мест занято: #{wagon.busy}"
+      p wagon
     else
       puts "Вагон № #{index}, тип \"Товарный\"-- всего объём вагона: #{wagon.total}, свободный объём: #{wagon.free}, занятый объём: #{wagon.busy}"
     end
