@@ -84,23 +84,23 @@ class Main
   def add_train
     @interface.puts_text(:num_train)
     number = @interface.user_input.to_s
-      @interface.puts_text(:choice_type)
-      submenu = @interface.user_input.to_i
-      case submenu
-      when 1
-        @train = PassengerTrain.new(number)
-        new_trains(@train)
-        @interface.puts_pass_train(number)
-      when 2
-        @train = CargoTrain.new(number)
-        new_trains(@train)
-        @interface.puts_cargo_train(number)
-      else
-        @interface.puts_text(:choice_back)
-      end
-      rescue RuntimeError => train_exception
-        @interface.puts_exception(train_exception)
-      retry
+    @interface.puts_text(:choice_type)
+    submenu = @interface.user_input.to_i
+    case submenu
+    when 1
+      @train = PassengerTrain.new(number)
+      new_trains(@train)
+      @interface.puts_pass_train(number)
+    when 2
+      @train = CargoTrain.new(number)
+      new_trains(@train)
+      @interface.puts_cargo_train(number)
+    else
+      @interface.puts_text(:choice_back)
+    end
+    rescue RuntimeError => train_exception
+      @interface.puts_exception(train_exception)
+    retry
   end
 
   # 3. Make a route
@@ -374,12 +374,12 @@ class Main
   end
 
   def show_trains_on_stations
-    @stations.each_index do |index|
-      @interface.puts_stations_trains(@stations[index].name)
-      train = @stations[index].each_train do |train|
+    @stations.each_index do |st_index|
+      @interface.puts_stations_trains(@stations[st_index].name)
+      @stations[st_index].each_train do |train|
         @interface.puts_each_train(train)
-        train.each_wagon do |wagon, index|
-          @interface.puts_detail_wagons(wagon, index)
+        train.each_wagon do |wagon, w_index|
+          @interface.puts_detail_wagons(wagon, w_index)
         end
         @interface.puts_text(:divide)
       end

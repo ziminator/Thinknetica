@@ -34,7 +34,7 @@ class Interface
     wagon_volume: 'Чтобы занять объём, введите номер вагона',
     volume_busy: 'Введите значение объёма, который необходимо занять
       в вагоне'
-  }
+  }.freeze
 
   def menu
     menu_items = <<-TEXT
@@ -198,31 +198,36 @@ class Interface
     " - #{volume}. Всего добавлено вагонов #{train.wagons.count}"
   end
 
-  def puts_pass_wagons(train)
-    train.wagons.each.with_index(1) { |train, index|  puts "В вагоне № - " \
-    "#{index}: всего мест-#{train.total}, свободных мест-#{train.free}," \
-    " занято мест-#{train.busy}" }
+  def puts_pass_wagons(trains)
+    trains.wagons.each.with_index(1) do |train, index|
+      puts "В вагоне № - #{index}: всего мест-#{train.total}, " \
+      "свободных мест-#{train.free}, занято мест-#{train.busy}"
+    end
   end
 
-  def puts_cargo_wagons(train)
-    train.wagons.each.with_index(1) { |train, index|  puts "Вагон № - " \
-    "#{index}: общий объём-#{train.total}, свободный объём вагона-" \
-    "#{train.free}, занятый объём вагона-#{train.busy}" }
+  def puts_cargo_wagons(trains)
+    trains.wagons.each.with_index(1) do |train, index|
+      puts "Вагон № - #{index}: общий объём-#{train.total}, " \
+      "свободный объём вагона-#{train.free}, занятый объём вагона-#{train.busy}"
+    end
   end
 
   def puts_list_stations(stations)
-    stations.each.with_index(1) { |station, index| puts "#{index} - " \
-    "#{station.name} "}
+    stations.each.with_index(1) do |station, index|
+      puts "#{index} - #{station.name} "
+    end
   end
 
   def puts_list_trains(trains)
-    trains.each.with_index(1) { |train, index| puts "#{index}: " \
-    "Поезд № #{train.number}, тип - #{train.type}" }
+    trains.each.with_index(1) do |train, index|
+      puts "#{index}: Поезд № #{train.number}, тип - #{train.type}"
+    end
   end
 
   def puts_list_routes(routes)
-    routes.each.with_index(1) { |route, index| puts "#{index}: " \
-    "#{route.stations.map(&:name)}" }
+    routes.each.with_index(1) do |route, index|
+      puts "#{index}: #{route.stations.map(&:name)}"
+    end
   end
 
   def puts_stations_trains(station)

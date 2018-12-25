@@ -7,7 +7,7 @@ class Train
   include Company
   include InstanceCounter
   include Validation
-  NUMBER_TRAIN = /^[a-zа-я\d]{3}-?[a-zа-я\d]{2}$/i
+  NUMBER_TRAIN = /^[a-zа-я\d]{3}-?[a-zа-я\d]{2}$/i.freeze
   attr_reader :number, :wagons, :speed, :type, :route, :index
 
   @@trains = {}
