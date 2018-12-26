@@ -75,8 +75,8 @@ class Main
     station = Station.new(name)
     new_stations(station)
     @interface.puts_result_station(true, name)
-    rescue RuntimeError => station_exception
-      @interface.puts_exception(station_exception)
+  rescue RuntimeError => station_exception
+    @interface.puts_exception(station_exception)
     retry
   end
 
@@ -98,8 +98,8 @@ class Main
     else
       @interface.puts_text(:choice_back)
     end
-    rescue RuntimeError => train_exception
-      @interface.puts_exception(train_exception)
+  rescue RuntimeError => train_exception
+    @interface.puts_exception(train_exception)
     retry
   end
 
@@ -124,8 +124,8 @@ class Main
         @interface.puts_text(:choice_back)
       end
     end
-    rescue RuntimeError => route_exception
-      @interface.puts_exception(route_exception)
+  rescue RuntimeError => route_exception
+    @interface.puts_exception(route_exception)
     retry
   end
 
@@ -254,7 +254,7 @@ class Main
     @interface.puts_text(:list_stations)
     @interface.puts_list_stations(@stations)
     @interface.puts_text(:divide)
-    return true
+    true
   end
 
   # 12 Show list trains
@@ -295,8 +295,8 @@ class Main
       volume = @interface.user_input.to_i
       @get_wagon.fill(volume)
     end
-    rescue RuntimeError => fill_exception
-      @interface.puts_exception(fill_exception)
+  rescue RuntimeError => fill_exception
+    @interface.puts_exception(fill_exception)
     retry
   end
 
@@ -333,7 +333,7 @@ class Main
       @interface.puts_text(:choice_back)
       return
     end
-    return true
+    true
   end
 
   def check_station
@@ -346,7 +346,7 @@ class Main
       @interface.puts_text(:choice_back)
       return
     end
-    return true
+    true
   end
 
   def check_train
@@ -362,7 +362,7 @@ class Main
       @interface.puts_text(:choice_back)
       return
     end
-    return true
+    true
   end
 
   def empty_station
@@ -370,7 +370,7 @@ class Main
       @interface.puts_text(:empty_stations)
       return
     end
-    return true
+    true
   end
 
   def show_trains_on_stations

@@ -51,7 +51,7 @@ class Station
   def validate!
     raise 'Наименование станции не введено, повторите попытку!' if @name.empty?
 
-    raise 'Станция с таким наименованием уже есть,' \
-      'придумате другое название!' if @@stations.map(&:name).include? @name
+    raise 'Станция с таким наименованием уже есть, придумате другое название!' \
+    if @@stations.map(&:name).include? @name
   end
 end
