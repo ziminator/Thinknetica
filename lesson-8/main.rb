@@ -83,24 +83,36 @@ class Main
   # 2. Make a train
   def add_train
     @interface.puts_text(:num_train)
-    number = @interface.user_input.to_s
+    @number = @interface.user_input.to_s
     @interface.puts_text(:choice_type)
-    submenu = @interface.user_input.to_i
-    case submenu
-    when 1
-      @train = PassengerTrain.new(number)
-      new_trains(@train)
-      @interface.puts_pass_train(number)
-    when 2
-      @train = CargoTrain.new(number)
-      new_trains(@train)
-      @interface.puts_cargo_train(number)
-    else
-      @interface.puts_text(:choice_back)
-    end
+    @submenu = @interface.user_input.to_i
+    submenu_train
   rescue RuntimeError => train_exception
     @interface.puts_exception(train_exception)
     retry
+  end
+
+  def submenu_train
+    case @submenu
+    when 1
+      new_passenger
+    when 2
+      new_cargo
+    else
+      @interface.puts_text(:choice_back)
+    end
+  end
+
+  def new_passenger
+    @train = PassengerTrain.new(@number)
+    new_trains(@train)
+    @interface.puts_pass_train(@number)
+  end
+
+  def new_cargo
+    @train = CargoTrain.new(@number)
+    new_trains(@train)
+    @interface.puts_cargo_train(@number)
   end
 
   # 3. Make a route
@@ -109,24 +121,32 @@ class Main
       @interface.puts_text(:empty_stations)
     else
       show_stations
-      @interface.puts_text(:choice_stations)
-      @interface.puts_text(:first)
-      first = @interface.user_input.to_i - 1
-      @interface.puts_text(:last)
-      last = @interface.user_input.to_i - 1
-      first = @stations[first]
-      last = @stations[last]
-      if @stations.include?(first) && @stations.include?(last)
-        @route = Route.new(first, last)
-        new_routes(@route)
-        @interface.puts_create_route(first, last)
-      else
-        @interface.puts_text(:choice_back)
-      end
+      first_last
+      new_route
     end
   rescue RuntimeError => route_exception
     @interface.puts_exception(route_exception)
     retry
+  end
+
+  def first_last
+    @interface.puts_text(:choice_stations)
+    @interface.puts_text(:first)
+    first = @interface.user_input.to_i - 1
+    @interface.puts_text(:last)
+    last = @interface.user_input.to_i - 1
+    @first = @stations[first]
+    @last = @stations[last]
+  end
+
+  def new_route
+    if @stations.include?(@first) && @stations.include?(@last)
+      @route = Route.new(@first, @last)
+      new_routes(@route)
+      @interface.puts_create_route(@first, @last)
+    else
+      @interface.puts_text(:choice_back)
+    end
   end
 
   # 4. Add station to route
