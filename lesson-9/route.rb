@@ -6,11 +6,14 @@ require_relative 'station.rb'
 class Route
   include InstanceCounter
   include Validation
+  extend Accessors
 
   attr_reader :stations, :first, :last
 
-  validate :first, :type, Station
-  validate :last, :type, Station
+  validate :first, :presence
+  validate :last, :presence
+  validate :first, :type, class: Station
+  validate :last, :type, class: Station
 
   def initialize(first, last)
     @stations = [first, last]

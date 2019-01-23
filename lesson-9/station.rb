@@ -10,10 +10,9 @@ class Station
 
   attr_reader :name
 
-  validate :name, :presence
-  validate :name, :type, type: String
-
   @@stations = []
+
+  validate :name, :presence
 
   def self.all
     @@stations

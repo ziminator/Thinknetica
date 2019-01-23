@@ -8,13 +8,15 @@ class Train
   include Company
   include InstanceCounter
   include Validation
-  extend Accessors
 
   attr_reader :number, :wagons, :speed, :type, :route, :index
   NUMBER_TRAIN = /^[a-zа-я\d]{3}-?[a-zа-я\d]{2}$/i.freeze
 
   @@trains = {}
 
+  validate :number, :format, regexp: NUMBER_TRAIN
+  validate :number, :presence
+  validate :type, :presence
 
   def self.find(number)
     @@trains[number]
@@ -89,14 +91,4 @@ class Train
   def prev_station
     @route.stations[@index - 1] if current_station != @route.first_station
   end
-
-  protected
-
-  def validate!
-    raise 'Введен некорректный номер поезда!' if @number !~ NUMBER_TRAIN
-    raise 'Номер поезда не может быть пустым!' \
-    if @number.nil? || @number.empty?
-    raise 'Такой номер поезда уже есть!' if @@trains.include? @number
-  end
-
 end

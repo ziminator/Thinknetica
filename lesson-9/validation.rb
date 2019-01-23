@@ -6,22 +6,19 @@ module Validation
   end
 
   module ClassMethods
-    attr_accessor :check
+    attr_reader :check_list
 
-    def validate(name, type, *params)
-      self.check ||= {}
-      self.check[name] ||= []
-      self.check[name] << [type, params]
+    def validate(name, type, params = {})
+      @check_list ||= []
+      @check_list << { name: name, type: type, param: params }
     end
   end
 
   module InstanceMethods
     def validate!
-      self.class.check.each do |name, params|
-        value = instance_variable_get("@#{name}")
-        params.each do |val_params|
-          send(val_params.first, value, val_params[1..-1])
-        end
+      self.class.check_list.each do |checking|
+        attr = instance_variable_get("@#{checking[:name]}")
+        send(checking[:type].to_sym, attr, checking[:options])
       end
     end
 
@@ -34,18 +31,20 @@ module Validation
 
     protected
 
-    def presence(value, *args)
-      raise 'Значение не должно быть пустым!' if value.empty? || value.nil?
+    def presence(attr, args = {})
+      if attr.is_a? String
+        raise 'Значение не должно быть пустым!' if attr.empty?
+      else
+        raise 'Значение не существует!' if attr.nil?
+      end
     end
 
-    def format(value, *args)
-      format = args[0]
-      raise 'Не верный формат!' if value !~ format
+    def format(attr, args = {})
+      raise 'Неверный формат!' if attr !~ args[:regexp]
     end
 
-    def type(value, *args)
-      class_type = args[0]
-      raise 'Несовпадение класса!' if value.class == class_type
+    def type(attr, args = {})
+      raise 'Несовпадение класса!' unless attr.instance_of? args[:class]
     end
   end
 end
