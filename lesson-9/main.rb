@@ -24,12 +24,12 @@ class Main
   end
 
   def run
-    data_create_stations
-    data_create_trains
-    data_add_wagons
-    data_add_routes
-    data_add_stations
-    data_set_routes
+    #data_create_stations
+    #data_create_trains
+    #data_add_wagons
+    #data_add_routes
+    #data_add_stations
+    #data_set_routes
     @interface = Interface.new
     loop do
       @interface.menu
