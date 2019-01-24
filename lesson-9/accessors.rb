@@ -8,12 +8,10 @@ module Accessors
 
       define_method("#{name}=".to_sym) do |value|
         instance_variable_set(variable_name, value)
-        instance_variable_set(history_var, []) unless \
-        instance_variable_get(history_var)
+        instance_variable_set(history_var, []) unless instance_variable_get(history_var)
         instance_variable_set(history_var) << value
       end
-      define_method("#{name}_history") \
-      { instance_variable_get("@history_#{name}".to_sym) }
+      define_method("#{name}_history") { instance_variable_get("@history_#{name}".to_sym) }
     end
   end
 

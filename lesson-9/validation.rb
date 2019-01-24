@@ -8,9 +8,10 @@ module Validation
   module ClassMethods
     attr_reader :check_list
 
-    def validate(name, type, params = {})
-      @check_list ||= []
-      @check_list << { name: name, type: type, param: params }
+    def validate(name, type, *options)
+      @check_list ||= {}
+      @check_list[type] ||= []
+      @check_list[type] << { name: name, options: options }
     end
   end
 
@@ -32,10 +33,10 @@ module Validation
     protected
 
     def presence(attr, args = {})
-      if attr.is_a? String
-        raise 'Значение не должно быть пустым!' if attr.empty?
-      else
-        raise 'Значение не существует!' if attr.nil?
+      if attr.is_a?(String) && attr.empty?
+        raise 'Значение не должно быть пустым!'
+      elsif attr.nil?
+        raise 'Значение не существует!'
       end
     end
 
